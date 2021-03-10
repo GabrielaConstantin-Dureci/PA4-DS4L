@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Programming Assignment 4</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Gabriela Constantin-Dureci" />
+    <meta name="date" content="2021-03-10" />
+    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Programming Assignment 4
+### Gabriela Constantin-Dureci
+### 03/10/2021
+
+---
+
+class: center, middle
+--
+#Here 
+--
+are 
+--
+my 
+--
+slides 
+--
+for 
+--
+PA4!
+
+---
+Plus, **bonus**, a *fun picture*!
+
+--
+background-image: url(https://ling.rutgers.edu/images/stories/undergraduate/linguistics_word_cloud-rectangular.png)
+---
+class: center, middle, inverse
+--
+Let's get started 
+
+--
+
+#**NOW**!
+
+---
+class: center, middle
+This is a walkthrough of how I completed PA4!
+---
+class: center, middle
+# Step 1
+
+--
+
+## Create a new project in RStudio called pa4.
+
+--
+
+### Achievement 1 **unlocked**. 
+
+---
+class: center, middle
+# Step 2
+
+--
+
+## Download the dataset and store it in data_raw.
+
+--
+
+### Achievement 2 **unlocked**. 
+
+---
+class: center, middle
+# Step 3
+
+--
+
+## Generate an HTML presentation using xaringan.
+
+--
+
+*You are looking at it!*
+
+--
+
+### Achievement 3 **unlocked**. 
+
+---
+class: center, middle
+# Step 4
+
+--
+
+## Save the RMarkdown file as index.Rmd inside of the folder *slides*.
+
+--
+
+### Achievement 4 **unlocked**.
+
+---
+class: center, middle
+
+# Step 5
+
+--
+
+## Tidy the data and save the tidy version as a .csv file in data_tidy.
+
+--
+
+### Achievement 5 **unlocked**.
+
+--
+
+I used the pivot_longer and separate functions to tidy the data. 
+
+---
+
+class: center, middle, inverse
+
+#Confession time!
+
+--
+
+Initially, I took the  overly-complicated way of tidying the data using the functions: pivot_longer, separate AND gather and unite. 
+
+--
+
+It looked something like this.
+
+--
+
+one&lt;-fricatives%&gt;% 
+  separate(col = sh_cog, into = c('sh', 'cog'), sep ="_" ) %&gt;% 
+  separate(col = s_cog, into = c('s','cog'),sep = "_") %&gt;%
+  pivot_longer(., cols = c("s", "sh"), names_to = "Phonemes1", values_to = "COG") %&gt;% 
+separate(col = sh_skewness, into = c('sh', 'skewness'), sep ="_" ) %&gt;% 
+  separate(col = s_skewness, into = c('s','skewness'),sep = "_") %&gt;%
+  pivot_longer(., cols = c("s", "sh"), 
+               names_to = "Phonemes2", values_to = "Skewness")
+
+finally_done&lt;-one %&gt;% 
+gather(key = "Phonemes1", "Phonemes", "Phonemes2") %&gt;% 
+  select(obs,Phonemes, COG, Skewness)
+
+--
+
+## It was clearly not the best way!
+
+---
+# Step 6 
+
+--
+
+## One table of descriptive statistics coming right up! 
+
+--
+
+*(Well, not up, below! Stay tuned for more!)*
+--
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Phoneme &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mean_cog &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sd_cog &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mean_skewness &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sd_skewness &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; s &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5690.524 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 913.2537 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.7714211 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2834032 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sh &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3994.823 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 697.0922 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5527295 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4411120 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+# Step 7 (1)
+
+--
+
+2. Create a boxplot of center of gravity as a function of phoneme.
+
+--
+
+![](PA4-GCD_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+---
+# Step 7 (2)
+
+--
+
+2. Plot Skewness as a function of phoneme
+
+--
+![](PA4-GCD_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+---
+# Step 8
+
+--
+
+##Fit a model that examines center of gravity as a function of skewness for the [s] segments.
+
+--
+
+
+```r
+s &lt;-fricatives %&gt;% 
+  filter(., Phoneme == "s")
+head(s)
+```
+
+```
+## # A tibble: 6 x 4
+##     obs Phoneme   cog skewness
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+## 1     1 s       3285.   -1.22 
+## 2     2 s       4664.   -1.19 
+## 3     3 s       4680.   -1.07 
+## 4     4 s       4874.   -1.06 
+## 5     5 s       4879.   -1.03 
+## 6     6 s       5195.   -0.949
+```
+
+```r
+model &lt;- lm(cog ~ skewness, data = s)
+```
+---
+
+```r
+summary(model)
+```
+
+```
+## 
+## Call:
+## lm(formula = cog ~ skewness, data = s)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1060.74   -21.72    58.96   123.00   405.24 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   8027.2      212.3   37.80  &lt; 2e-16 ***
+## skewness      3029.1      259.1   11.69 7.69e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 320.1 on 18 degrees of freedom
+## Multiple R-squared:  0.8836,	Adjusted R-squared:  0.8771 
+## F-statistic: 136.6 on 1 and 18 DF,  p-value: 7.691e-10
+```
+
+---
+#Step 9: Make a scaterplot
+
+--
+![](PA4-GCD_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+---
+
+# Step 10 : Check model diagnostics
+
+--
+![](PA4-GCD_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+---
+class: center, middle, inverse
+
+# Let's dig deeper!
+
+--
+
+##Let's check a couple of things!
+
+--
+
+##Let's see if...
+
+---
+#...the relationship between x and y is linear
+
+--
+
+##We *eyeball* the plot we just made (see slide 17)
+
+--
+
+## It's linear!
+
+---
+
+# ... the mean of residuals is zero
+
+--
+
+```
+mean(model$residuals)
+
+```
+--
+ 
+[1] 1.136591e-14
+
+--
+
+#Close enough!
+
+---
+
+#Step 10: Write up the results
+
+--
+
+This part is tricky for me!
+
+--
+
+But I will try!
+
+--
+
+For this study, I analyzed the data using a bivariate linear regression model in R. 
+Center of Gravity and Skewness were continuous variables .
+I also fit a model that examined center of gravity as a function of skewness for the /s/ phonemes.
+---
+
+#Steps 12 -15
+
+--
+
+#will happen behind the scenes!
+
+--
+
+###Stay tuned!
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
