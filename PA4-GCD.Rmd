@@ -10,7 +10,7 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-class: center, middle
+class: center, middle, inverse
 --
 #Here 
 --
